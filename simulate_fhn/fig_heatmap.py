@@ -22,10 +22,9 @@ import imageio.v2 as imageio
 
 from funs import mesh_single_branch, get_connections, mesh_double_branch
 
-
 import json
 
-name = "20240603-123100"
+name = "20240603-144104"
 
 # Import config
 with open(f"output/{name}/config.json", "r") as fp:
@@ -68,10 +67,11 @@ index_to_pos = {value: key for key, value in pos_to_index.items()}
 title = "FHN model on grid"
 times = np.arange(0, config["tmax"], config["log_interval"])
 images = []
-for i, time in enumerate(times[:100]):
+for i, time in enumerate(times):
 
-    # Setup image (sets places with no cells to -1)
+    # Baseline image to show region with no cells
     ar_plot = cell_mesh - 0.5
+
     df_plot = df[df["time"] == time]
 
     # Assign values
