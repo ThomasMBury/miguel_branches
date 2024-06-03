@@ -197,9 +197,23 @@ s.set_paced_cell_list(list_cells_pace)
 log = s.run(
     args.tmax,
     log_interval=args.log_interval,
-    log=myokit.LOG_STATE + myokit.LOG_BOUND,
+    log=["engine.time", "membrane.v"],
     progress=w,
 )
+
+# Save full data log as binary file
+log.save(dir_name + "datalog", precision=64)
+
+# Save data log as csv
+log.save_csv(
+    dir_name + "datalog.csv",
+    precision=64,
+    order=None,
+    delimiter=",",
+    header=True,
+    meta=False,
+)
+
 
 # Datalog to pd.DataFrame
 dic = {"time": np.array(log["engine.time"])}
