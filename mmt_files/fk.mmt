@@ -1,0 +1,104 @@
+# Fenton-Karma Model
+
+[membrane]
+V = -(28 + 30 * x) * (V - 0.001) * (V - 0.9) * (V - 1) - 1000 * m^3 * h * j * (V - 0.045) - 0.15 * x
+m = alpha_m(V) * (1 - m) - beta_m(V) * m
+h = alpha_h(V) * (1 - h) - beta_h(V) * h
+j = alpha_j(V) * (1 - j) - beta_j(V) * j
+d = alpha_d(V) * (1 - d) - beta_d(V) * d
+f = alpha_f(V) * (1 - f) - beta_f(V) * f
+r = alpha_r(V) * (1 - r) - beta_r(V) * r
+s = alpha_s(V) * (1 - s) - beta_s(V) * s
+x = 10 * (1 - x) - 0.1 * x
+
+[V]
+label = "Membrane potential"
+unit = "millivolt"
+
+[m]
+label = "Sodium activation gate"
+unit = "dimensionless"
+
+[h]
+label = "Sodium inactivation gate"
+unit = "dimensionless"
+
+[j]
+label = "Sodium inactivation gate"
+unit = "dimensionless"
+
+[d]
+label = "Potassium activation gate"
+unit = "dimensionless"
+
+[f]
+label = "Potassium inactivation gate"
+unit = "dimensionless"
+
+[r]
+label = "Calcium-activated potassium activation gate"
+unit = "dimensionless"
+
+[s]
+label = "Calcium-activated potassium inactivation gate"
+unit = "dimensionless"
+
+[x]
+label = "Intracellular calcium concentration"
+unit = "dimensionless"
+
+[alpha_m(V)]
+code = "0.32 * (V + 47.13) / (1 - exp(-(V + 47.13) / 0.1))"
+unit = "dimensionless"
+
+[beta_m(V)]
+code = "0.08 * exp(-V / 11)"
+unit = "dimensionless"
+
+[alpha_h(V)]
+code = "0.128 * exp(-(V + 46.37) / 18)"
+unit = "dimensionless"
+
+[beta_h(V)]
+code = "4 / (1 + exp(-(V + 23) / 5))"
+unit = "dimensionless"
+
+[alpha_j(V)]
+code = "(0.00000000000417 * exp(-0.1 * (V + 32))) / (1 + exp(-0.1 * (V + 32)))"
+unit = "dimensionless"
+
+[beta_j(V)]
+code = "0.000000000000125 * exp(-V / 80)"
+unit = "dimensionless"
+
+[alpha_d(V)]
+code = "0.095 * exp(-(V + 50) / 20)"
+unit = "dimensionless"
+
+[beta_d(V)]
+code = "0.07 * (1 / (exp(-(V + 30) / 10) + 1))"
+unit = "dimensionless"
+
+[alpha_f(V)]
+code = "0.012 * (exp(-(V + 28) / 5) / (1 + exp(-(V + 28) / 5)))"
+unit = "dimensionless"
+
+[beta_f(V)]
+code = "0.0065 * (exp(-(V + 30) / 5) / (1 + exp(-(V + 30) / 5)))"
+unit = "dimensionless"
+
+[alpha_r(V)]
+code = "0.000033 * (V + 30) / (1 - exp(-(V + 30) / 5))"
+unit = "dimensionless"
+
+[beta_r(V)]
+code = "0.000033 * (V + 30) / (exp((V + 30) / 5) - 1)"
+unit = "dimensionless"
+
+[alpha_s(V)]
+code = "0.0005 * (V + 30) / (1 - exp(-(V + 30) / 5))"
+unit = "dimensionless"
+
+[beta_s(V)]
+code = "0.0005 * (V + 30) / (exp((V + 30) / 5) - 1)"
+unit = "dimensionless"
