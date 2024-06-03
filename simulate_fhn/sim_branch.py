@@ -72,7 +72,7 @@ class Args:
 
 # Get CLI arguments
 args = tyro.cli(Args)
-args.ncells = args.l1 * args.w1 + args.l2 * args.w2
+args.ncells = args.l1 * args.w1 + 2 * (args.l2 * args.w2)
 print(args)
 
 # Export config data

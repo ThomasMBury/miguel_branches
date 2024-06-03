@@ -139,9 +139,9 @@ def get_connections(mesh, conductance=1):
 if __name__ == "__main__":
     print("Run tests")
 
-    mesh = mesh_double_branch()
-    print(mesh)
+    mesh = mesh_double_branch(l1=100, w1=5, l2=20, w2=8, slope=1, l_solo=30)
+    # print(mesh)
 
-    # pos_to_cell, connections = get_connections(mesh)
+    pos_to_cell, connections = get_connections(mesh)
     # print(pos_to_cell)
     # print(connections)

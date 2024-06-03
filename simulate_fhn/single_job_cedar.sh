@@ -36,17 +36,8 @@ pip install tyro
 # # Print opencl info found by myokit
 # python -m myokit opencl
 
-# Param values for asym1shot
-declare -a SLOPE_VALS=(1);
-declare -a W2_VALS=(8);
+echo "Running job for slope=$SLOPE, w2=$W2, stim left"
+python -u sim_branch.py --slope $SLOPE --w2=$W2
 
-# Run python script for asym1shot
-for SLOPE in "${SLOPE_VALS[@]}"; do
-    for W2 in "${W2_VALS[@]}"; do
-        echo "Running job for slope=$SLOPE, w2=$W2 stim left"
-        python -u sim_branch.py --slope $SLOPE --w2=$W2
-
-        echo "Running job for slope=$SLOPE, w2=$W2 stim right"
-        python -u sim_branch.py --slope $SLOPE --w2=$W2 --stim_right
-    done
-done
+echo "Running job for slope=$SLOPE, w2=$W2, stim right"
+python -u sim_branch.py --slope $SLOPE --w2=$W2 --stim_right
