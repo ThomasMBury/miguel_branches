@@ -8,7 +8,7 @@ declare -a SLOPE_VALS=(1);
 declare -a W2_VALS=(8);
 
 for SLOPE in "${SLOPE_VALS[@]}"; do
-	for W2 in "${W2[@]}"; done
+	for W2 in "${W2[@]}"; do
 		export SLOPE=$SLOPE
 		export W2=$W2
 		# Run job on cedar
