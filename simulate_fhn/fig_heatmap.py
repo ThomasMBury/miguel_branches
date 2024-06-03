@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import imageio.v2 as imageio
 
-from funs import mesh_single_branch, get_connections
+from funs import mesh_single_branch, get_connections, mesh_double_branch
 
 
 import json
@@ -48,7 +48,7 @@ df = pd.read_csv(filepath)
 
 
 # Create cell mesh that defines geometry
-cell_mesh = mesh_single_branch(
+cell_mesh = mesh_double_branch(
     l1=config["l1"],
     w1=config["w1"],
     l2=config["l2"],

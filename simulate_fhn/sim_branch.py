@@ -99,13 +99,13 @@ list_coords_pace = []
 
 # if stim on the left
 if not args.stim_right:
-    for y in range(args.w1):
+    for y in np.arange(args.l2, args.l2 + args.w1):
         for x in range(args.stim_width):
             list_coords_pace.append((y, x))
 
 # if stim on the right
 else:
-    for y in range(args.w1):
+    for y in np.arange(args.l2, args.l2 + args.w1):
         for x in np.arange(args.l1 - args.stim_width, args.l1):
             list_coords_pace.append((y, x))
 
