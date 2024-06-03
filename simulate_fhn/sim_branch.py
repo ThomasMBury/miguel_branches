@@ -76,9 +76,9 @@ args.ncells = args.l1 * args.w1 + args.l2 * args.w2
 print(args)
 
 # Export config data
-dir_name = f"output_{datetime_now}"
+dir_name = f"output/{datetime_now}/"
 os.makedirs(dir_name, exist_ok=True)
-json.dump(vars(args), open(dir_name + "/config.json", "w"))
+json.dump(vars(args), open(dir_name + "config.json", "w"))
 
 # ----------------
 # Geometry
@@ -207,7 +207,7 @@ for i in np.arange(0, args.ncells):
     dic["cell {}".format(i)] = log["{}.membrane.v".format(i)]
 df = pd.DataFrame(dic)
 
-filename = "df_fhn.csv"
+filename = "df_voltage.csv"
 df.to_csv(dir_name + filename, index=False)
 
 s.reset()
