@@ -37,17 +37,17 @@ datetime_now = datetime.datetime.now(newYorkTz).strftime("%Y%m%d-%H%M%S")
 ### Define command line arguments
 @dataclass
 class Args:
-    l1: int = 20
+    l1: int = 40
     """length of horizontal channel"""
-    w1: int = 3
+    w1: int = 5
     """width of horizontal channel"""
-    l2: int = 5
+    l2: int = 10
     """length of diagonal channel"""
-    w2: int = 4
+    w2: int = 8
     """width of diagonal channel"""
     slope: int = 1
     """slope of diagonal channel"""
-    l_solo: int = 2
+    l_solo: int = 5
     """length of section of horizontal channel before diag channel begins"""
 
     tmax: int = 200
