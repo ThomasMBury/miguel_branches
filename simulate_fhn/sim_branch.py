@@ -37,17 +37,17 @@ datetime_now = datetime.datetime.now(newYorkTz).strftime("%Y%m%d-%H%M%S")
 ### Define command line arguments
 @dataclass
 class Args:
-    l1: int = 40
+    l1: int = 20
     """length of horizontal channel"""
-    w1: int = 4
+    w1: int = 3
     """width of horizontal channel"""
-    l2: int = 20
+    l2: int = 5
     """length of diagonal channel"""
-    w2: int = 8
+    w2: int = 4
     """width of diagonal channel"""
     slope: int = 1
     """slope of diagonal channel"""
-    l_solo: int = 5
+    l_solo: int = 2
     """length of section of horizontal channel before diag channel begins"""
 
     tmax: int = 200
@@ -79,7 +79,6 @@ print(args)
 dir_name = f"output_{datetime_now}"
 os.makedirs(dir_name, exist_ok=True)
 json.dump(vars(args), open(dir_name + "/config.json", "w"))
-
 
 # ----------------
 # Geometry
