@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Parameter values to loop through
-# declare -a SLOPE_VALS=(0.5 1 2);
-# declare -a W2_VALS=(8 10 12);
+# declare -a SLOPE_VALS=(0.2679 0.5774 1 1.7321 3.7321);
+# declare -a W2_VALS=(8);
 
 declare -a SLOPE_VALS=(1);
 declare -a W2_VALS=(8);
 
 for SLOPE in "${SLOPE_VALS[@]}"; do
-	for W2 in "${W2[@]}"; do
+	for W2 in "${W2_VALS[@]}"; do
 		export SLOPE=$SLOPE
 		export W2=$W2
 		# Run job on cedar

@@ -202,19 +202,18 @@ log = s.run(
     progress=w,
 )
 
-# Save full data log as binary file
-log.save(dir_name + "datalog", precision=64)
+# # Save full data log as binary file
+# log.save(dir_name + "datalog", precision=64)
 
-# Save data log as csv
-log.save_csv(
-    dir_name + "datalog.csv",
-    precision=64,
-    order=None,
-    delimiter=",",
-    header=True,
-    meta=False,
-)
-
+# # Save data log as csv
+# log.save_csv(
+#     dir_name + "datalog.csv",
+#     precision=64,
+#     order=None,
+#     delimiter=",",
+#     header=True,
+#     meta=False,
+# )
 
 # Datalog to pd.DataFrame
 dic = {"time": np.array(log["engine.time"])}
