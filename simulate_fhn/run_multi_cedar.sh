@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # Parameter values to loop through
-declare -a SLOPE_VALS=(0.5 1 2);
-declare -a W2_VALS=(8 10 12);
+# declare -a SLOPE_VALS=(0.5 1 2);
+# declare -a W2_VALS=(8 10 12);
+
+declare -a SLOPE_VALS=(1);
+declare -a W2_VALS=(8);
 
 for SLOPE in "${SLOPE_VALS[@]}"; do
 	for W2 in "${W2[@]}"; done
