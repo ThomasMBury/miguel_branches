@@ -38,7 +38,7 @@ pip install tyro
 
 # Param values for asym1shot
 declare -a SLOPE_VALS=(1);
-declare -a W2_VALS=(3);
+declare -a W2_VALS=(8);
 
 # Run python script for asym1shot
 for SLOPE in "${SLOPE_VALS[@]}"; do

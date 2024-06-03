@@ -51,6 +51,50 @@ def mesh_single_branch(l1=15, w1=2, l2=5, w2=3, l_solo=3, slope=1):
     return mesh
 
 
+def mesh_double_branch(l1=15, w1=3, l2=5, w2=4, l_solo=3, slope=1):
+    """Create mesh for geometry with one horiztal branch and two angled branches
+    symmetric to one another across the horiztonal axis
+
+    Args:
+        l1: length of horizotal branch
+        w1: width of horizontal branch
+        l2: length of angled brances in vertical direction
+        w2: width of angled branches in horiztonal direction
+        l_solo: length of section of horiztonal branch before angled branch begins
+        slope: slope of diagonal branches
+
+    Returns:
+        np.array - two-dimensional array of cell mesh
+    """
+
+    # Warning - diagonal branches doesn't fit in the following case
+    min_l1 = l_solo + w2 + l2 / slope - 1
+    if l1 < min_l1:
+        print(f"Warning: min l1 for diag branch to fit is {min_l1}")
+
+    mesh = np.zeros([w1 + 2 * l2, l1])
+
+    # Fill in horizontal channel
+    mesh[l2 : l2 + w1, :] = 1
+
+    # fill in upper diagonal channel
+    for y in np.arange(l2):
+        left_x = l_solo + (l2 - y - 1) / slope
+        right_x = left_x + w2
+        for x in np.arange(l1):
+            if (x >= left_x) & (x < right_x):
+                mesh[y, x] = 1
+
+    # fill in lower diagonal channel
+    for y in np.arange(l2 + w1, l2 + w1 + l2):
+        left_x = l_solo + (y - w1 - l2) / slope
+        right_x = left_x + w2
+        for x in np.arange(l1):
+            if (x >= left_x) & (x < right_x):
+                mesh[y, x] = 1
+    return mesh
+
+
 def get_connections(mesh, conductance=1):
     """
     Create dictionary to map from position index to cell index
@@ -95,9 +139,9 @@ def get_connections(mesh, conductance=1):
 if __name__ == "__main__":
     print("Run tests")
 
-    mesh = mesh_single_branch()
+    mesh = mesh_double_branch()
     print(mesh)
 
-    pos_to_cell, connections = get_connections(mesh)
-    print(pos_to_cell)
-    print(connections)
+    # pos_to_cell, connections = get_connections(mesh)
+    # print(pos_to_cell)
+    # print(connections)

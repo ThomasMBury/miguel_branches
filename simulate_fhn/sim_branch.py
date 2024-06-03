@@ -21,7 +21,7 @@ import myokit as myokit
 import tyro
 from dataclasses import dataclass
 
-from funs import mesh_single_branch, get_connections
+from funs import mesh_single_branch, get_connections, mesh_double_branch
 
 import datetime
 import pytz
@@ -37,20 +37,20 @@ datetime_now = datetime.datetime.now(newYorkTz).strftime("%Y%m%d-%H%M%S")
 ### Define command line arguments
 @dataclass
 class Args:
-    l1: int = 40
+    l1: int = 100
     """length of horizontal channel"""
     w1: int = 5
     """width of horizontal channel"""
-    l2: int = 10
+    l2: int = 20
     """length of diagonal channel"""
     w2: int = 8
     """width of diagonal channel"""
     slope: int = 1
     """slope of diagonal channel"""
-    l_solo: int = 5
+    l_solo: int = 30
     """length of section of horizontal channel before diag channel begins"""
 
-    tmax: int = 200
+    tmax: int = 300
     """time to run simulation up to"""
     log_interval: int = 2
     """how often to log system (number of time units)"""
@@ -80,12 +80,13 @@ dir_name = f"output/{datetime_now}/"
 os.makedirs(dir_name, exist_ok=True)
 json.dump(vars(args), open(dir_name + "config.json", "w"))
 
+
 # ----------------
 # Geometry
 # ---------------
 
 # Create cell mesh that defines geometry
-cell_mesh = mesh_single_branch(
+cell_mesh = mesh_double_branch(
     l1=args.l1, w1=args.w1, l2=args.l2, w2=args.w2, slope=args.slope, l_solo=args.l_solo
 )
 

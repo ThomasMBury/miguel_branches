@@ -25,7 +25,7 @@ from funs import mesh_single_branch, get_connections
 
 import json
 
-name = "20240603-123037"
+name = "20240603-123100"
 
 # Import config
 with open(f"output/{name}/config.json", "r") as fp:
@@ -61,24 +61,22 @@ cell_mesh = mesh_single_branch(
 pos_to_index, connections = get_connections(cell_mesh)
 index_to_pos = {value: key for key, value in pos_to_index.items()}
 
-
-# Setup image
-ar_plot = cell_mesh * -1
-
-
 # -----
 # Make gif of heatmap at given times
 # --------
 
 title = "FHN model on grid"
-times = np.arange(0, config["tmax"], 20)
+times = np.arange(0, config["tmax"], config["log_interval"])
 images = []
-for i, time in enumerate(times):
+for i, time in enumerate(times[:100]):
+
+    # Setup image (sets places with no cells to -1)
+    ar_plot = cell_mesh - 0.5
     df_plot = df[df["time"] == time]
 
     # Assign values
     for col in df_plot.columns[1:]:
-        cell_idx = int(df_plot.columns[3].split(" ")[-1])
+        cell_idx = int(col.split(" ")[-1])
         cell_pos = index_to_pos[cell_idx]
         ar_plot[cell_pos] = df_plot[col].values[0]
 
@@ -89,8 +87,8 @@ for i, time in enumerate(times):
     fig = plt.figure(figsize=(4, 4))
     plt.imshow(
         ar_plot,
-        # vmin=-0.2,
-        # vmax=0.8,
+        vmin=-0.5,
+        vmax=1,
         # aspect=1,
     )
     # plt.tick_params(left=False, labelleft=False)
@@ -106,20 +104,17 @@ for i, time in enumerate(times):
     filename = filepath_figs + f"fig_{time:03}.png"
     plt.savefig(filename)
     plt.close()
+    print(f"saved fig to {filename}")
     images.append(filename)
 
-# # Create GIF from the images
-# # gif_filename = f"../figures/{name}/fhn_annulus_cond_{conductance}_n_{ncells}_a_{fhn_a}_eps_{fhn_eps}_action_{action_idx}.gif"
-# # gif_filename = f"../figures/{name}/fhn_annulus_cond_{conductance}_n_{ncells}_a_{fhn_a}_eps_{fhn_eps}_stimdist_{stim_dist}_stimdelay_{stim_delay}_stimheight_{stim_height}.gif"
-# gif_filename = f"../figures/{name}/fhn_grid_cond_{conductance}_n_{ncells}_a_{fhn_a}_eps_{fhn_eps}_stimdist_{stim_dist}_stimwidth_{stim_width}_stimheight_{stim_height}_2.gif"
+# Create GIF from the images
+gif_filename = f"figures/{name}/heatmap.gif"
 
-# # gif_filename = f"../figures/{name}/fhn_annulus_cond_{conductance}_n_{ncells}_stim1_{stim_big}_stim2_{stim_small}_stimdist_{stim_dist}_eps_{eps}.gif"
-# # gif_filename = f"../figures/{name}/fhn_annulus_cond_{conductance}_n_{ncells}_stimwidth_{stim_width}_stimdist_{stim_dist}_stimdelay_{stim_delay}_eps_{eps}.gif"
-# with imageio.get_writer(gif_filename, mode="I", fps=20) as writer:
-#     for filename in images:
-#         image = imageio.imread(filename)
-#         writer.append_data(image)
+with imageio.get_writer(gif_filename, mode="I", fps=20) as writer:
+    for filename in images:
+        image = imageio.imread(filename)
+        writer.append_data(image)
 
-# # Clean up image files
-# for filename in set(images):
-#     os.remove(filename)
+# Clean up image files
+for filename in set(images):
+    os.remove(filename)
