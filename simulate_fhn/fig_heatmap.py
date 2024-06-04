@@ -24,7 +24,10 @@ from funs import mesh_single_branch, get_connections, mesh_double_branch
 
 import json
 
-name = "20240603-144104"
+names = sorted([n for n in os.listdir("output") if n[:4] == "2024"])[::-1]
+name = "20240604-092608-id21333578"
+name = names[4]
+
 
 # Import config
 with open(f"output/{name}/config.json", "r") as fp:
@@ -118,3 +121,6 @@ with imageio.get_writer(gif_filename, mode="I", fps=20) as writer:
 # Clean up image files
 for filename in set(images):
     os.remove(filename)
+
+# Export config data
+json.dump(config, open(f"figures/{name}/config.json", "w"))

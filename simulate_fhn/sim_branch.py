@@ -74,7 +74,6 @@ class Args:
 
 # Get CLI arguments
 args = tyro.cli(Args)
-args.ncells = args.l1 * args.w1 + 2 * (args.l2 * args.w2)
 print(args)
 
 # Export config data
@@ -91,6 +90,9 @@ json.dump(vars(args), open(dir_name + "config.json", "w"))
 cell_mesh = mesh_double_branch(
     l1=args.l1, w1=args.w1, l2=args.l2, w2=args.w2, slope=args.slope, l_solo=args.l_solo
 )
+
+# Count the number of cells
+args.ncells = int(cell_mesh.sum())
 
 # Get connections
 pos_to_index, connections = get_connections(cell_mesh)
