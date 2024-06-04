@@ -114,7 +114,7 @@ if not args.stim_right:
 # if stim on the right
 else:
     for y in np.arange(args.h, args.h + args.w1):
-        for x in np.arange(args.l1 - args.stim_width, args.l1):
+        for x in np.arange(cell_mesh.shape[1] - args.stim_width, cell_mesh.shape[1]):
             list_coords_pace.append((y, x))
 
 list_cells_pace = []
