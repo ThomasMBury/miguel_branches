@@ -37,6 +37,8 @@ datetime_now = datetime.datetime.now(newYorkTz).strftime("%Y%m%d-%H%M%S")
 ### Define command line arguments
 @dataclass
 class Args:
+    run_name: str = "fhn"
+    """name of the run"""
     l1: int = 128
     """length of horizontal channel"""
     w1: int = 5
@@ -45,7 +47,7 @@ class Args:
     """length of diagonal channel"""
     w2: int = 8
     """width of diagonal channel"""
-    slope: int = 1
+    slope: float = 1.0
     """slope of diagonal channel"""
     l_solo: int = 60
     """length of section of horizontal channel before diag channel begins"""
@@ -76,7 +78,7 @@ args.ncells = args.l1 * args.w1 + 2 * (args.l2 * args.w2)
 print(args)
 
 # Export config data
-dir_name = f"output/{datetime_now}/"
+dir_name = f"output/{datetime_now}-{args.run_name}/"
 os.makedirs(dir_name, exist_ok=True)
 json.dump(vars(args), open(dir_name + "config.json", "w"))
 

@@ -37,7 +37,7 @@ pip install tyro
 # python -m myokit opencl
 
 echo "Running job for slope=$SLOPE, w2=$W2, stim left"
-python -u sim_branch.py --slope $SLOPE --w2=$W2
+python -u sim_branch.py --run_name $SLURM_JOB_ID --slope $SLOPE --w2=$W2 
 
 echo "Running job for slope=$SLOPE, w2=$W2, stim right"
-python -u sim_branch.py --slope $SLOPE --w2=$W2 --stim_right
+python -u sim_branch.py --run_name $SLURM_JOB_ID --slope $SLOPE --w2=$W2 --stim_right
