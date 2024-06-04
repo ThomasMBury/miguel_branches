@@ -22,6 +22,7 @@ import imageio.v2 as imageio
 
 from funs import (
     mesh_single_branch,
+    mesh_single_branch_2,
     get_connections,
     mesh_double_branch,
     mesh_double_branch_2,
@@ -31,7 +32,7 @@ import json
 
 names = sorted([n for n in os.listdir("output") if n[:4] == "2024"])[::-1]
 name = "20240604-092608-id21333578"
-name = names[6]
+name = names[0]
 
 
 # Import config
@@ -55,7 +56,7 @@ df = pd.read_csv(filepath)
 
 
 # Create cell mesh that defines geometry
-cell_mesh = mesh_double_branch_2(
+cell_mesh = mesh_single_branch_2(
     l1=config["l1"],
     w1=config["w1"],
     h=config["h"],

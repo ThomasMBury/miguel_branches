@@ -76,6 +76,14 @@ class Args:
     stim_width: int = 2
     """width of area in which to stimulate"""
 
+    # conduction time parameters
+    x1: int = 20
+    """left location of where to record activation time"""
+    x2: int = 120
+    """right location of where to record activation time"""
+    active_thresh: float = 0.5
+    """threshold in state variable to register as active"""
+
 
 # Get CLI arguments
 args = tyro.cli(Args)
@@ -232,6 +240,50 @@ df = pd.DataFrame(dic)
 
 filename = "df_voltage.csv"
 df.to_csv(dir_name + filename, index=False)
+
+# ----------
+# Compute conduction time between x1 and x2
+# ----------
+
+
+def get_active_time(list_coords):
+    """
+    Compute first activation time of cells at cell_coords (averaged)
+    """
+
+    list_idx = [pos_to_index[coord] for coord in list_coords]
+    list_cols = ["time"] + [f"cell {idx}" for idx in list_idx]
+    df_left = df[list_cols]
+    # Take mean over each cell at these positions
+    series_v = df_left.set_index("time").mean(axis=1)
+    # Find all active times
+    active_times = series_v[series_v > args.active_thresh].index.values
+    # If empty
+    if len(active_times) == 0:
+        return np.nan
+
+    else:
+        return active_times[0]
+
+
+yvals = np.arange(args.h, args.h + args.w1)
+
+# Left activation
+list_coords = [(y, args.x1) for y in yvals]
+active_time_left = get_active_time(list_coords)
+
+# Right activation
+list_coords = [(y, args.x2) for y in yvals]
+active_time_right = get_active_time(list_coords)
+
+# Export activation times
+dict_active_times = dict(active_left=active_time_left, active_right=active_time_right)
+
+json.dump(dict_active_times, open(dir_name + "active_times.json", "w"))
+
+# ---------
+# reset simulation
+# ---------
 
 s.reset()
 
