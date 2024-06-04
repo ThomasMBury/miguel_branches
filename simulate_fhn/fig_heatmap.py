@@ -87,7 +87,7 @@ for i, time in enumerate(times):
     #     ydim // scale_down, xdim // scale_down
     # )
 
-    fig = plt.figure(figsize=(4, 4))
+    fig = plt.figure(figsize=(4, 2))
     plt.imshow(
         ar_plot,
         vmin=-0.5,
@@ -102,7 +102,7 @@ for i, time in enumerate(times):
     #     left=0.1,
     # )
     plt.title(f"\nt = {time}ms")
-    plt.colorbar()
+    # plt.colorbar()
     # Save under temp figs dir
     filename = filepath_figs + f"fig_{time:03}.png"
     plt.savefig(filename)

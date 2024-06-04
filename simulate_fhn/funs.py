@@ -95,6 +95,55 @@ def mesh_double_branch(l1=15, w1=3, l2=5, w2=4, l_solo=3, slope=1):
     return mesh
 
 
+def mesh_double_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
+    """Create mesh for geometry with one horiztal branch and two angled branches
+    symmetric to one another across the horiztonal axis
+
+    V2 differences:
+        l1 defines the length of the horizontal branch prior to and after the intersection
+        w2 is now the width of the digaonal branches perpendicular to their edges
+        l2 no longer
+        h defines the vertical length of a diagonal branch
+        slope is in degrees
+
+    Args:
+        l1: length of horizotal branch
+        w1: width of horizontal branch
+        w2: width of angled branches in horiztonal direction
+        l_solo: length of section of horiztonal branch before angled branch begins
+        slope: slope of diagonal branches
+
+    Returns:
+        np.array - two-dimensional array of cell mesh
+    """
+
+    theta_rad = theta * np.pi * 2 / 360
+    len_intersection = int(w2 / (np.sin(theta_rad)))
+
+    mesh = np.zeros([2 * h + w1, 2 * l1 + len_intersection])
+
+    # Fill in horizontal channel
+    mesh[h : h + w1, :] = 1
+
+    # fill in upper diagonal channel
+    for y in np.arange(h):
+        left_x = l1 + (h - y - 1) / np.tan(theta_rad)
+        right_x = left_x + len_intersection
+        for x in np.arange(l1, 2 * l1 + len_intersection):
+            if (x >= left_x) & (x < right_x):
+                mesh[y, x] = 1
+
+    # fill in upper diagonal channel
+    for y in np.arange(h + w1, 2 * h + w1):
+        left_x = l1 + (y - w1 - h) / np.tan(theta_rad)
+        right_x = left_x + len_intersection
+        for x in np.arange(l1, 2 * l1 + len_intersection):
+            if (x >= left_x) & (x < right_x):
+                mesh[y, x] = 1
+
+    return mesh
+
+
 def get_connections(mesh, conductance=1):
     """
     Create dictionary to map from position index to cell index
@@ -110,7 +159,7 @@ def get_connections(mesh, conductance=1):
     # Dictionary to store index of each cell
     pos_to_cell = {}
 
-    # Assign indices to each one
+    # Assign indices to each cell
     index = 0
     for y in range(rows):
         for x in range(cols):
@@ -139,9 +188,9 @@ def get_connections(mesh, conductance=1):
 if __name__ == "__main__":
     print("Run tests")
 
-    mesh = mesh_double_branch(l1=100, w1=5, l2=20, w2=8, slope=1, l_solo=30)
-    # print(mesh)
+    mesh = mesh_double_branch_2(l1=8, w1=3, h=5, w2=3, theta=30)
+    print(mesh)
 
     pos_to_cell, connections = get_connections(mesh)
-    # print(pos_to_cell)
-    # print(connections)
+    print(pos_to_cell)
+    print(connections)
