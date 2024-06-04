@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #SBATCH --job-name=fhn_branch
-#SBATCH --account=def-glass # adjust this to match the accounting group you are using to submit jobs
+#SBATCH --account=def-gilbub # adjust this to match the accounting group you are using to submit jobs
 #SBATCH --time=0-0:20:00      # adjust this to match the walltime of your job
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -30,14 +30,15 @@ pip install --no-index --upgrade pip
 #pip install --no-index -r /home/tbury/projects/def-glass/tbury/torord-sims/requirements.txt
 pip install pandas numpy
 # pip install git+https://github.com/MichaelClerx/myokit.git
-pip install myokit==1.33.0
+#pip install myokit==1.33.0
+pip install myokit
 pip install tyro
 
 # # Print opencl info found by myokit
 # python -m myokit opencl
 
 echo "Running job for slope=$SLOPE, w2=$W2, stim left"
-python -u sim_branch.py --run_name $SLURM_JOB_ID --slope $SLOPE --w2=$W2 
+python -u sim_branch.py --run_name id$SLURM_JOB_ID --slope $SLOPE --w2=$W2 
 
 echo "Running job for slope=$SLOPE, w2=$W2, stim right"
-python -u sim_branch.py --run_name $SLURM_JOB_ID --slope $SLOPE --w2=$W2 --stim_right
+python -u sim_branch.py --run_name id$SLURM_JOB_ID --slope $SLOPE --w2=$W2 --stim_right
