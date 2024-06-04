@@ -8,7 +8,7 @@
 declare -a THETA_VALS=(15 30 45 60 75)
 declare -a W2_VALS=(5);
 
-for SLOPE in "${THETA_VALS[@]}"; do
+for THETA in "${THETA_VALS[@]}"; do
 	for W2 in "${W2_VALS[@]}"; do
 		export THETA=$THETA
 		export W2=$W2
