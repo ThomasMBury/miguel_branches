@@ -193,7 +193,7 @@ s = myokit.SimulationOpenCL(
     p,
     ncells=args.ncells,
     diffusion=True,
-    precision=64,
+    # precision=64,
 )
 
 
@@ -204,6 +204,9 @@ s.set_connections(connections)
 s.set_state(state0)
 s.set_step_size(step_size=dt)
 
+print("Set cells to pace")
+s.set_paced_cell_list(list_cells_pace)
+
 # Time simulation
 tic = time.perf_counter()
 
@@ -211,7 +214,6 @@ tic = time.perf_counter()
 w = myokit.ProgressPrinter(digits=-1)
 
 print("Run sim")
-s.set_paced_cell_list(list_cells_pace)
 log = s.run(
     args.tmax,
     log_interval=args.log_interval,
