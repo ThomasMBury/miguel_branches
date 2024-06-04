@@ -31,7 +31,7 @@ import json
 
 names = sorted([n for n in os.listdir("output") if n[:4] == "2024"])[::-1]
 name = "20240604-092608-id21333578"
-name = names[0]
+name = names[6]
 
 
 # Import config

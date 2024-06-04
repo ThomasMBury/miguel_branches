@@ -144,6 +144,39 @@ def mesh_double_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
     return mesh
 
 
+def mesh_single_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
+    """Create mesh for geometry with one horiztal branch and one angled branch
+
+    Args:
+        l1: length of horizotal branch before and after junction
+        w1: width of horizontal branch
+        w2: width of angled branch perpendicular to branch edge
+        theta: angle of diagonal branch (degrees)
+        h: height of angled branch
+
+    Returns:
+        np.array - two-dimensional array of cell mesh
+    """
+
+    theta_rad = theta * np.pi * 2 / 360
+    len_intersection = int(w2 / (np.sin(theta_rad)))
+
+    mesh = np.zeros([h + w1, 2 * l1 + len_intersection])
+
+    # Fill in horizontal channel
+    mesh[h : h + w1, :] = 1
+
+    # fill in diagonal channel
+    for y in np.arange(h):
+        left_x = l1 + (h - y - 1) / np.tan(theta_rad)
+        right_x = left_x + len_intersection
+        for x in np.arange(l1, 2 * l1 + len_intersection):
+            if (x >= left_x) & (x < right_x):
+                mesh[y, x] = 1
+
+    return mesh
+
+
 def get_connections(mesh, conductance=1):
     """
     Create dictionary to map from position index to cell index
@@ -188,7 +221,7 @@ def get_connections(mesh, conductance=1):
 if __name__ == "__main__":
     print("Run tests")
 
-    mesh = mesh_double_branch_2(l1=8, w1=3, h=5, w2=3, theta=30)
+    mesh = mesh_single_branch_2(l1=8, w1=3, h=5, w2=3, theta=30)
     print(mesh)
 
     pos_to_cell, connections = get_connections(mesh)

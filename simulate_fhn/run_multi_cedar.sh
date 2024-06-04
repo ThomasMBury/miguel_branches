@@ -5,7 +5,8 @@
 # declare -a W2_VALS=(8);
 
 # declare -a SLOPE_VALS=(0.2679);
-declare -a THETA_VALS=(15 30 45 60 75)
+# declare -a THETA_VALS=(15 30 45 60 75)
+declare -a THETA_VALS=(15 45 75)
 declare -a W2_VALS=(5);
 
 for THETA in "${THETA_VALS[@]}"; do

@@ -24,6 +24,7 @@ from dataclasses import dataclass
 
 from funs import (
     mesh_single_branch,
+    mesh_single_branch_2,
     get_connections,
     mesh_double_branch,
     mesh_double_branch_2,
@@ -91,7 +92,7 @@ json.dump(vars(args), open(dir_name + "config.json", "w"))
 # ---------------
 
 # Create cell mesh that defines geometry
-cell_mesh = mesh_double_branch_2(
+cell_mesh = mesh_single_branch_2(
     l1=args.l1, w1=args.w1, h=args.h, w2=args.w2, theta=args.theta
 )
 
