@@ -159,7 +159,11 @@ def mesh_single_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
     """
 
     theta_rad = theta * np.pi * 2 / 360
-    len_intersection = int(w2 / (np.sin(theta_rad)))
+
+    if theta == 90:
+        len_intersection = w2
+    else:
+        len_intersection = int(w2 / (np.sin(theta_rad)))
 
     mesh = np.zeros([h + w1, 2 * l1 + len_intersection])
 
@@ -167,12 +171,16 @@ def mesh_single_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
     mesh[h : h + w1, :] = 1
 
     # fill in diagonal channel
-    for y in np.arange(h):
-        left_x = l1 + (h - y - 1) / np.tan(theta_rad)
-        right_x = left_x + len_intersection
-        for x in np.arange(l1, 2 * l1 + len_intersection):
-            if (x >= left_x) & (x < right_x):
-                mesh[y, x] = 1
+    if theta == 90:
+        mesh[:h, l1 : l1 + w2] = 1
+
+    else:
+        for y in np.arange(h):
+            left_x = l1 + (h - y - 1) / np.tan(theta_rad)
+            right_x = left_x + len_intersection
+            for x in np.arange(l1, 2 * l1 + len_intersection):
+                if (x >= left_x) & (x < right_x):
+                    mesh[y, x] = 1
 
     return mesh
 
@@ -221,7 +229,7 @@ def get_connections(mesh, conductance=1):
 if __name__ == "__main__":
     print("Run tests")
 
-    mesh = mesh_single_branch_2(l1=8, w1=3, h=5, w2=3, theta=30)
+    mesh = mesh_single_branch_2(l1=8, w1=3, h=5, w2=3, theta=90)
     print(mesh)
 
     pos_to_cell, connections = get_connections(mesh)
