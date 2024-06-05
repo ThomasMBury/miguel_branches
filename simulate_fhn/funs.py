@@ -144,14 +144,14 @@ def mesh_double_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
     return mesh
 
 
-def mesh_single_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
+def mesh_single_branch_2(l1=15, w1=3, h=5, w2=4, theta=45, w2_horiz=True):
     """Create mesh for geometry with one horiztal branch and one angled branch
 
     Args:
         l1: length of horizotal branch before and after junction
         w1: width of horizontal branch
         w2: width of angled branch perpendicular to branch edge
-        theta: angle of diagonal branch (degrees)
+        theta: angle of diagonal branch (degrees, 0-180)
         h: height of angled branch
 
     Returns:
@@ -160,25 +160,49 @@ def mesh_single_branch_2(l1=15, w1=3, h=5, w2=4, theta=45):
 
     theta_rad = theta * np.pi * 2 / 360
 
-    if theta == 90:
+    assert theta >= 0, "require theta>=0"
+    assert theta <= 180, "require theta<=180"
+
+    if w2_horiz:
+        # In this case, we use horizontal width to define branch width
         len_intersection = w2
     else:
-        len_intersection = int(w2 / (np.sin(theta_rad)))
+        # Otherwise we use perpendicular width to define branch width
+        if theta == 90:
+            len_intersection = w2
+        elif theta == 0 or theta == 180:
+            len_intersection = w2
+        else:
+            len_intersection = int(w2 / (np.sin(theta_rad)))
 
     mesh = np.zeros([h + w1, 2 * l1 + len_intersection])
 
     # Fill in horizontal channel
     mesh[h : h + w1, :] = 1
 
-    # fill in diagonal channel
-    if theta == 90:
-        mesh[:h, l1 : l1 + w2] = 1
+    if theta == 0 or theta == 180:
+        return mesh
 
-    else:
+    if theta == 90:
+        # Add vertical channel
+        mesh[:h, l1 : l1 + w2] = 1
+        return mesh
+
+    # Add diagonal channel
+    if theta < 90:
         for y in np.arange(h):
             left_x = l1 + (h - y - 1) / np.tan(theta_rad)
             right_x = left_x + len_intersection
             for x in np.arange(l1, 2 * l1 + len_intersection):
+                if (x >= left_x) & (x < right_x):
+                    mesh[y, x] = 1
+
+    if theta > 90:
+        theta_rad_c = np.pi - theta_rad
+        for y in np.arange(h):
+            left_x = l1 - (h - y - 1) / np.tan(theta_rad_c)
+            right_x = left_x + len_intersection
+            for x in np.arange(0, l1 + len_intersection):
                 if (x >= left_x) & (x < right_x):
                     mesh[y, x] = 1
 
@@ -229,9 +253,9 @@ def get_connections(mesh, conductance=1):
 if __name__ == "__main__":
     print("Run tests")
 
-    mesh = mesh_single_branch_2(l1=8, w1=3, h=5, w2=3, theta=90)
+    mesh = mesh_single_branch_2(l1=8, w1=3, h=5, w2=3, theta=135)
     print(mesh)
 
-    pos_to_cell, connections = get_connections(mesh)
-    print(pos_to_cell)
-    print(connections)
+    # pos_to_cell, connections = get_connections(mesh)
+    # print(pos_to_cell)
+    # print(connections)

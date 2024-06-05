@@ -32,7 +32,7 @@ import json
 
 names = sorted([n for n in os.listdir("output") if n[:4] == "2024"])[::-1]
 name = "20240604-092608-id21333578"
-name = names[0]
+name = names[17]
 
 
 # Import config
@@ -76,7 +76,7 @@ index_to_pos = {value: key for key, value in pos_to_index.items()}
 # --------
 
 title = "FHN model on grid"
-times = np.arange(0, config["tmax"], config["log_interval"])
+times = np.arange(0, config["tmax"], 2)
 images = []
 for i, time in enumerate(times):
 

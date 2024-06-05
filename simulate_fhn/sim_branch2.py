@@ -44,8 +44,15 @@ datetime_now = datetime.datetime.now(newYorkTz).strftime("%Y%m%d-%H%M%S")
 ### Define command line arguments
 @dataclass
 class Args:
-    run_name: str = "fhn"
+    run_name: str = "mac"
     """name of the run"""
+    save_voltage_data: bool = True
+    """whether to save the voltage data at each log interval"""
+    log_interval: float = 1
+    """how often to log system (number of time units)"""
+    tmax: int = 300
+    """time to run simulation up to"""
+
     l1: int = 60
     """length of horizontal channel before and after junction """
     w1: int = 5
@@ -54,13 +61,10 @@ class Args:
     """height of the diagonal channel"""
     w2: int = 5
     """width of diagonal channel"""
+    w2_horiz: bool = False
+    """whether to use horizontal or perpendicular width to define width of branch"""
     theta: int = 45
     """angle of diagonal channel"""
-
-    tmax: int = 300
-    """time to run simulation up to"""
-    log_interval: int = 2
-    """how often to log system (number of time units)"""
 
     # FHN parameters
     fhn_eps: float = 0.015
@@ -71,8 +75,8 @@ class Args:
     """Cell-to-cell conductance g, resulting in a current sum(g*(v_k-v)))"""
 
     # pacing params
-    stim_right: bool = False
-    """stimulate from the rhs or lhs"""
+    # stim_right: bool = False
+    # """stimulate from the rhs or lhs"""
     stim_width: int = 2
     """width of area in which to stimulate"""
 
@@ -101,7 +105,12 @@ json.dump(vars(args), open(dir_name + "config.json", "w"))
 
 # Create cell mesh that defines geometry
 cell_mesh = mesh_single_branch_2(
-    l1=args.l1, w1=args.w1, h=args.h, w2=args.w2, theta=args.theta
+    l1=args.l1,
+    w1=args.w1,
+    h=args.h,
+    w2=args.w2,
+    theta=args.theta,
+    w2_horiz=args.w2_horiz,
 )
 
 # Count the number of cells
@@ -114,17 +123,18 @@ index_to_pos = {value: key for key, value in pos_to_index.items()}
 # Define which cells to pace
 list_coords_pace = []
 
-# if stim on the left
-if not args.stim_right:
-    for y in np.arange(args.h, args.h + args.w1):
-        for x in range(args.stim_width):
-            list_coords_pace.append((y, x))
 
-# if stim on the right
-else:
-    for y in np.arange(args.h, args.h + args.w1):
-        for x in np.arange(cell_mesh.shape[1] - args.stim_width, cell_mesh.shape[1]):
-            list_coords_pace.append((y, x))
+# Apply stim on the left
+# if not args.stim_right:
+for y in np.arange(args.h, args.h + args.w1):
+    for x in range(args.stim_width):
+        list_coords_pace.append((y, x))
+
+# # if stim on the right
+# else:
+#     for y in np.arange(args.h, args.h + args.w1):
+#         for x in np.arange(cell_mesh.shape[1] - args.stim_width, cell_mesh.shape[1]):
+#             list_coords_pace.append((y, x))
 
 list_cells_pace = []
 for coord in list_coords_pace:
@@ -196,7 +206,6 @@ s = myokit.SimulationOpenCL(
     # precision=64,
 )
 
-
 s.set_connections(connections)
 # can check connections using s._connections
 
@@ -241,7 +250,8 @@ for i in np.arange(0, args.ncells):
 df = pd.DataFrame(dic)
 
 filename = "df_voltage.csv"
-df.to_csv(dir_name + filename, index=False)
+if args.save_voltage_data:
+    df.to_csv(dir_name + filename, index=False)
 
 # ----------
 # Compute conduction time between x1 and x2
@@ -279,8 +289,10 @@ list_coords = [(y, args.x2) for y in yvals]
 active_time_right = get_active_time(list_coords)
 
 # Export activation times
-dict_active_times = dict(active_left=active_time_left, active_right=active_time_right)
-
+dict_active_times = dict(
+    active_left=str(round(active_time_left, 3)),
+    active_right=str(round(active_time_right, 3)),
+)
 json.dump(dict_active_times, open(dir_name + "active_times.json", "w"))
 
 # ---------

@@ -1,1 +1,0 @@
-{"run_name": "id21340985", "l1": 60, "w1": 5, "h": 20, "w2": 5, "theta": 75, "tmax": 300, "log_interval": 2, "fhn_eps": 0.015, "fhn_a": 0.12, "conductance": 1, "stim_right": true, "stim_width": 2}

@@ -1,0 +1,1 @@
+{"run_name": "mac", "l1": 60, "w1": 5, "h": 20, "w2": 10, "theta": 180, "tmax": 300, "log_interval": 0.5, "fhn_eps": 0.005, "fhn_a": 0.12, "conductance": 1, "stim_width": 2, "x1": 20, "x2": 120, "active_thresh": 0.5}
