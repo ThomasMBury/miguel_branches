@@ -30,7 +30,7 @@ pip install --no-index --upgrade pip
 pip install --no-index pandas numpy
 # pip install git+https://github.com/MichaelClerx/myokit.git
 #pip install myokit==1.33.0
-pip install --no-index myokit==1.36
+pip install --no-index myokit
 pip install --no-index tyro
 
 # # Print opencl info found by myokit
@@ -40,11 +40,11 @@ pip install --no-index tyro
 # python -u sim_branch.py --run_name id$SLURM_JOB_ID --theta $THETA --w2=$W2 --double_precision
 
 
-declare -a THETA_VALS=(150 135 120)
+declare -a THETA_VALS=(150 135 120);
 declare -a W2_VALS=(5 10 15);
 
 # for ((THETA=10; THETA<=170; THETA+=5)); do
-for THETA in "${W2_VALS[@]}"; do
+for THETA in "${THETA_VALS[@]}"; do
 	for W2 in "${W2_VALS[@]}"; do
 
         echo "Running job for THETA=$THETA, w2=$W2"

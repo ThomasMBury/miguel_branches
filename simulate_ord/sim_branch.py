@@ -50,7 +50,7 @@ class Args:
     """whether to save the voltage data at each log interval"""
     log_interval: float = 1
     """how often to log system (number of time units)"""
-    tmax: int = 50
+    tmax: int = 1000
     """time to run simulation up to"""
     double_precision: bool = False
     """whether to run OpenCL with 64-bit precision (doulbe) or 32-bit (single)"""
@@ -67,7 +67,7 @@ class Args:
     """angle of diagonal channel"""
 
     # Ord parametes
-    conductance: float = 4
+    conductance: float = 1
     """Cell-to-cell conductance g, resulting in a current sum(g*(v_k-v)))"""
 
     # pacing params
@@ -81,7 +81,7 @@ class Args:
     """left location of where to record activation time"""
     x2: int = 120
     """right location of where to record activation time"""
-    active_thresh: float = 0.5
+    active_thresh: float = 0
     """threshold in state variable to register as active"""
 
 
