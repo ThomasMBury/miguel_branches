@@ -3,9 +3,8 @@
 """
 Created on 2 June, 2024
 
-Simulate the FK model on branch structure
+Simulate the BR model on branch structure
 Stimulate planar wave
-Use cell mesh 2
 
 @author: tbury
 """
@@ -50,7 +49,7 @@ class Args:
     """whether to save the voltage data at each log interval"""
     log_interval: float = 1
     """how often to log system (number of time units)"""
-    tmax: int = 50
+    tmax: int = 200
     """time to run simulation up to"""
     double_precision: bool = False
     """whether to run OpenCL with 64-bit precision (doulbe) or 32-bit (single)"""
@@ -67,13 +66,14 @@ class Args:
     """angle of diagonal channel"""
 
     # Ord parametes
-    conductance: float = 4
+
+    conductance: float = 1
     """Cell-to-cell conductance g, resulting in a current sum(g*(v_k-v)))"""
 
     # pacing params
     # stim_right: bool = False
     # """stimulate from the rhs or lhs"""
-    stim_width: int = 4
+    stim_width: int = 10
     """width of area in which to stimulate"""
 
     # conduction time parameters
@@ -119,6 +119,7 @@ index_to_pos = {value: key for key, value in pos_to_index.items()}
 # Define which cells to pace
 list_coords_pace = []
 
+
 # Apply stim on the left
 # if not args.stim_right:
 for y in np.arange(args.h, args.h + args.w1):
@@ -141,21 +142,14 @@ for coord in list_coords_pace:
 # ----------------
 
 # Load in model from mmt file
-m = myokit.load_model("../mmt_files/ord-2011_1d.mmt")
+m = myokit.load_model("../mmt_files/br-1977-opencl.mmt")
 
 # Ord parameters
 
 # Dictionary to map to param labels used in Torord
 dict_par_labels = {
-    "ina": "ina.GNa",  # inward sodium current
-    "ito": "ito.Gto",  # transient outward current
-    "ical": "ical.PCa",  # L-type calcium current
-    "ikr": "ikr.GKr",  # Rapid late potassium current
-    "iks": "iks.GKs",  # Slow late potassium current
-    "inaca": "inaca.Gncx",  # sodium calcium exchange current
-    "tjca": "ical.tjca",  # relaxation time of L-type Ca current
+    "ina": "ina.gNaBar",  # inward sodium current
 }
-
 
 # Get default parameter values used in Ord (required to apply multipliers)
 params_default = {
@@ -167,28 +161,13 @@ params = {}
 
 # Channel conductance multipliers
 ina_mult = 1
-ical_mult = 1
-ikr_mult = 1
-iks_mult = 1
-tjca_mult = 1
-ito_mult = 1
-inaca_mult = 1
-
-
-params[dict_par_labels["ina"]] = params_default["ina"] * ina_mult
-params[dict_par_labels["ical"]] = params_default["ical"] * ical_mult
-params[dict_par_labels["ikr"]] = params_default["ikr"] * ikr_mult
-params[dict_par_labels["iks"]] = params_default["iks"] * iks_mult
-params[dict_par_labels["inaca"]] = params_default["inaca"] * inaca_mult
-params[dict_par_labels["ito"]] = params_default["ito"] * ito_mult
-params[dict_par_labels["tjca"]] = params_default["tjca"] * tjca_mult
-
+# params[dict_par_labels["ina"]] = params_default["ina"] * ina_mult
 
 # Create pacing protocol (used for pre-pacing here)
 bcl = 1000  # Pacing cycle length for cell
-duration = 1  # Duration of impulse (ms)
+duration = 2  # Duration of impulse (ms)
 level = 1  # Level of stimulus (1=full)
-offset = 0
+offset = 15
 
 # Pre-pacing protocol for each cell
 p_pre = myokit.pacing.blocktrain(bcl, duration, offset=offset, level=level)
@@ -210,7 +189,7 @@ for key in params.keys():
 
 # Prepacing of single cell to set initial condition
 s_cell = myokit.Simulation(m, p_pre)
-num_beats_pre = 100
+num_beats_pre = 1000
 print("Run pre-pacing of {} beats for single cell".format(num_beats_pre))
 s_cell.pre(num_beats_pre * bcl)
 print("Pre-pacing of single cell finished")

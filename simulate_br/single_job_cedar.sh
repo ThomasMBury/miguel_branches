@@ -36,24 +36,5 @@ pip install --no-index tyro
 # # Print opencl info found by myokit
 # python -m myokit opencl
 
-# echo "Running job for THETA=$THETA, w2=$W2"
-# python -u sim_branch.py --run_name id$SLURM_JOB_ID --theta $THETA --w2=$W2 --double_precision
-
-
-declare -a THETA_VALS=(150 135 120)
-declare -a W2_VALS=(5 10 15);
-
-# for ((THETA=10; THETA<=170; THETA+=5)); do
-for THETA in "${W2_VALS[@]}"; do
-	for W2 in "${W2_VALS[@]}"; do
-
-        echo "Running job for THETA=$THETA, w2=$W2"
-        python -u sim_branch.py --run_name id$SLURM_JOB_ID --theta $THETA --w2=$W2 --double_precision
-
-        # echo "Running job for slope=$SLOPE, w2=$W2, stim right"
-        # python -u sim_branch2.py --theta $THETA --w2=$W2 --fhn_eps 0.005 --stim_right
-
-	done
-done
-
-
+echo "Running job for THETA=$THETA, w2=$W2"
+python -u sim_branch.py --run_name id$SLURM_JOB_ID --theta $THETA --w2=$W2 --double_precision
