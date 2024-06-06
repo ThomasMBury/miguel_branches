@@ -71,7 +71,7 @@ class Args:
     """parameter to scale up all length parameters of geometry"""
 
     # Ord parametes
-    conductance: float = 1
+    conductance: float = 1 / 4
     """Cell-to-cell conductance g, resulting in a current sum(g*(v_k-v)))"""
 
     # pacing params

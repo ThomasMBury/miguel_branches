@@ -53,7 +53,6 @@ df = pd.read_csv(filepath)
 # Get mapping from cell index to cell position
 # ----------
 
-
 # Create cell mesh that defines geometry
 cell_mesh = mesh_single_branch_2(
     l1=config["l1"],
@@ -72,7 +71,7 @@ index_to_pos = {value: key for key, value in pos_to_index.items()}
 # --------
 
 title = "FHN model on grid"
-times = np.arange(0, config["tmax"], 4)
+times = np.arange(0, config["tmax"], 5)
 images = []
 for i, time in enumerate(times):
 

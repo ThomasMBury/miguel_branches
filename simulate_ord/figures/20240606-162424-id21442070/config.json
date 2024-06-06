@@ -1,0 +1,1 @@
+{"run_name": "id21442070", "save_voltage_data": true, "log_interval": 5, "tmax": 1000, "double_precision": true, "dt": 0.002, "l1": 60, "w1": 5, "h": 20, "w2": 5, "theta": 150, "scale_up": 1, "conductance": 1, "stim_width": 4, "x1": 20, "x2": 120, "active_thresh": 0, "open_cl_precision": 64}
