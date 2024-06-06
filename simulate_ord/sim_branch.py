@@ -50,8 +50,10 @@ class Args:
     """whether to save the voltage data at each log interval"""
     log_interval: float = 1
     """how often to log system (number of time units)"""
-    tmax: int = 200
+    tmax: int = 50
     """time to run simulation up to"""
+    double_precision: bool = False
+    """whether to run OpenCL with 64-bit precision (doulbe) or 32-bit (single)"""
 
     l1: int = 120
     """length of horizontal channel before and after junction """
@@ -72,7 +74,7 @@ class Args:
     # pacing params
     # stim_right: bool = False
     # """stimulate from the rhs or lhs"""
-    stim_width: int = 2
+    stim_width: int = 4
     """width of area in which to stimulate"""
 
     # conduction time parameters
@@ -86,6 +88,7 @@ class Args:
 
 # Get CLI arguments
 args = tyro.cli(Args)
+args.open_cl_precision = 64 if args.double_precision else 32
 print(args)
 
 # Export config data
@@ -161,7 +164,6 @@ params_default = {
     par: m.get(dict_par_labels[par]).value() for par in dict_par_labels.keys()
 }
 
-
 # Dictionary of parameters to adjust in model
 params = {}
 
@@ -188,7 +190,7 @@ params[dict_par_labels["tjca"]] = params_default["tjca"] * tjca_mult
 bcl = 1000  # Pacing cycle length for cell
 duration = 1  # Duration of impulse (ms)
 level = 1  # Level of stimulus (1=full)
-offset = 15
+offset = 0
 
 # Pre-pacing protocol for each cell
 p_pre = myokit.pacing.blocktrain(bcl, duration, offset=offset, level=level)
@@ -199,7 +201,7 @@ p.schedule(level, offset, duration)
 
 
 # Simulation time step (sometimes need 2e-3 as opposed to default 5-e3 to get convergence)
-dt = 5e-3  # 2e-3 or 5e-3 - smaller dt more stable
+dt = 2e-3  # 2e-3 or 5e-3 - smaller dt more stable
 
 # Set parameters of model
 for key in params.keys():
@@ -210,7 +212,7 @@ for key in params.keys():
 
 # Prepacing of single cell to set initial condition
 s_cell = myokit.Simulation(m, p_pre)
-num_beats_pre = 1000
+num_beats_pre = 100
 print("Run pre-pacing of {} beats for single cell".format(num_beats_pre))
 s_cell.pre(num_beats_pre * bcl)
 print("Pre-pacing of single cell finished")
@@ -224,7 +226,7 @@ s = myokit.SimulationOpenCL(
     p,
     ncells=args.ncells,
     diffusion=True,
-    precision=64,  # required for ord
+    precision=args.open_cl_precision,  # precision 64 required for ord to be stable
 )
 
 s.set_connections(connections)
