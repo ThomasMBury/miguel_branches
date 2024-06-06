@@ -48,13 +48,13 @@ class Args:
     """name of the run"""
     save_voltage_data: bool = True
     """whether to save the voltage data at each log interval"""
-    log_interval: float = 1
+    log_interval: float = 5
     """how often to log system (number of time units)"""
     tmax: int = 1000
     """time to run simulation up to"""
     double_precision: bool = False
     """whether to run OpenCL with 64-bit precision (doulbe) or 32-bit (single)"""
-    dt: float = 2e-5
+    dt: float = 2e-3
     """integration time step. 2e-3 or 5e-3 - smaller dt more stable"""
 
     l1: int = 60
@@ -125,7 +125,9 @@ list_coords_pace = []
 
 # Apply stim on the left
 # if not args.stim_right:
-for y in np.arange(args.h, args.h + args.w1):
+for y in np.arange(
+    args.h * args.scale_up, args.h * args.scale_up + args.w1 * args.scale_up
+):
     for x in range(args.stim_width):
         list_coords_pace.append((y, x))
 
@@ -303,7 +305,9 @@ def get_active_time(list_coords):
         return active_times[0]
 
 
-yvals = np.arange(args.h, args.h + args.w1)
+yvals = np.arange(
+    args.h * args.scale_up, args.h * args.scale_up + args.w1 * args.scale_up
+)
 
 # Left activation
 list_coords = [(y, args.x1) for y in yvals]

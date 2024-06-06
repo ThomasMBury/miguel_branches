@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #SBATCH --job-name=ord_branch
 #SBATCH --account=def-gilbub # adjust this to match the accounting group you are using to submit jobs
-#SBATCH --time=0-0:30:00      # adjust this to match the walltime of your job
+#SBATCH --time=0-1:00:00      # adjust this to match the walltime of your job
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=4      # adjust this if you are using parallel commands
 #SBATCH --mem=4000             # adjust this according to the memory requirement per node you need
@@ -48,9 +48,6 @@ for THETA in "${THETA_VALS[@]}"; do
 
         echo "Running job for THETA=$THETA, w2=$W2"
         python -u sim_branch.py --run_name id$SLURM_JOB_ID --theta $THETA --w2=$W2 --double_precision
-
-        # echo "Running job for slope=$SLOPE, w2=$W2, stim right"
-        # python -u sim_branch2.py --theta $THETA --w2=$W2 --fhn_eps 0.005 --stim_right
 
 	done
 done

@@ -48,7 +48,7 @@ class Args:
     """name of the run"""
     save_voltage_data: bool = True
     """whether to save the voltage data at each log interval"""
-    log_interval: float = 1
+    log_interval: float = 5
     """how often to log system (number of time units)"""
     tmax: int = 300
     """time to run simulation up to"""
