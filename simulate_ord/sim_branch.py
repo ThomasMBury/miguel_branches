@@ -50,7 +50,7 @@ class Args:
     """whether to save the voltage data at each log interval"""
     log_interval: float = 1
     """how often to log system (number of time units)"""
-    tmax: int = 300
+    tmax: int = 200
     """time to run simulation up to"""
 
     l1: int = 120
@@ -61,16 +61,11 @@ class Args:
     """height of the diagonal channel"""
     w2: int = 30
     """width of diagonal channel"""
-    w2_horiz: bool = False
-    """whether to use horizontal or perpendicular width to define width of branch"""
     theta: int = 150
     """angle of diagonal channel"""
 
-    # FHN parameters
-    fhn_eps: float = 0.015
-    """relaxation speed of recovery variable"""
-    fhn_a: float = 0.12
-    """excitability of cell"""
+    # Ord parametes
+
     conductance: float = 4
     """Cell-to-cell conductance g, resulting in a current sum(g*(v_k-v)))"""
 
@@ -110,7 +105,6 @@ cell_mesh = mesh_single_branch_2(
     h=args.h,
     w2=args.w2,
     theta=args.theta,
-    w2_horiz=args.w2_horiz,
 )
 
 # Count the number of cells
@@ -146,14 +140,49 @@ for coord in list_coords_pace:
 # ----------------
 
 # Load in model from mmt file
-m = myokit.load_model("../mmt_files/fhn.mmt")
+m = myokit.load_model("../mmt_files/ord-2011_1d.mmt")
 
-# Model parameters
-eps = args.fhn_eps
-a = args.fhn_a
-b = 0.5
-c = 1
-d = 0
+# Ord parameters
+
+# Dictionary to map to param labels used in Torord
+dict_par_labels = {
+    "ina": "ina.GNa",  # inward sodium current
+    "ito": "ito.Gto",  # transient outward current
+    "ical": "ical.PCa",  # L-type calcium current
+    "ikr": "ikr.GKr",  # Rapid late potassium current
+    "iks": "iks.GKs",  # Slow late potassium current
+    "inaca": "inaca.Gncx",  # sodium calcium exchange current
+    "tjca": "ical.tjca",  # relaxation time of L-type Ca current
+}
+
+
+# Get default parameter values used in Ord (required to apply multipliers)
+params_default = {
+    par: m.get(dict_par_labels[par]).value() for par in dict_par_labels.keys()
+}
+
+
+# Dictionary of parameters to adjust in model
+params = {}
+
+# Channel conductance multipliers
+ina_mult = 1
+ical_mult = 1
+ikr_mult = 1
+iks_mult = 1
+tjca_mult = 1
+ito_mult = 1
+inaca_mult = 1
+
+
+params[dict_par_labels["ina"]] = params_default["ina"] * ina_mult
+params[dict_par_labels["ical"]] = params_default["ical"] * ical_mult
+params[dict_par_labels["ikr"]] = params_default["ikr"] * ikr_mult
+params[dict_par_labels["iks"]] = params_default["iks"] * iks_mult
+params[dict_par_labels["inaca"]] = params_default["inaca"] * inaca_mult
+params[dict_par_labels["ito"]] = params_default["ito"] * ito_mult
+params[dict_par_labels["tjca"]] = params_default["tjca"] * tjca_mult
+
 
 # Create pacing protocol (used for pre-pacing here)
 bcl = 1000  # Pacing cycle length for cell
@@ -169,16 +198,8 @@ p = myokit.Protocol()
 p.schedule(level, offset, duration)
 
 
-# Dictionary of parameters to adjust in model
-params = {}
-params["membrane.epsilon"] = eps
-params["membrane.a"] = a
-params["membrane.b"] = b
-params["membrane.c"] = c
-params["membrane.d"] = d
-
 # Simulation time step (sometimes need 2e-3 as opposed to default 5-e3 to get convergence)
-dt = 5e-3
+dt = 5e-3  # 2e-3 or 5e-3 - smaller dt more stable
 
 # Set parameters of model
 for key in params.keys():
@@ -203,7 +224,7 @@ s = myokit.SimulationOpenCL(
     p,
     ncells=args.ncells,
     diffusion=True,
-    # precision=64,
+    precision=64,  # required for ord
 )
 
 s.set_connections(connections)
@@ -226,7 +247,7 @@ print("Run sim")
 log = s.run(
     args.tmax,
     log_interval=args.log_interval,
-    log=["engine.time", "membrane.v"],
+    log=["engine.time", "membrane.V"],
     progress=w,
 )
 
@@ -246,7 +267,7 @@ log = s.run(
 # Datalog to pd.DataFrame
 dic = {"time": np.array(log["engine.time"])}
 for i in np.arange(0, args.ncells):
-    dic["cell {}".format(i)] = log["{}.membrane.v".format(i)]
+    dic["cell {}".format(i)] = log["{}.membrane.V".format(i)]
 df = pd.DataFrame(dic)
 
 filename = "df_voltage.csv"

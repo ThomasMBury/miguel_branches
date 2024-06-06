@@ -77,7 +77,7 @@ images = []
 for i, time in enumerate(times):
 
     # Baseline image to show region with no cells
-    ar_plot = cell_mesh - 0.5
+    ar_plot = (cell_mesh - 1) * 120
 
     df_plot = df[df["time"] == time]
 
@@ -94,8 +94,8 @@ for i, time in enumerate(times):
     fig = plt.figure(figsize=(4, 2))
     plt.imshow(
         ar_plot,
-        vmin=-0.5,
-        vmax=1,
+        vmin=-120,
+        vmax=20,
         # aspect=1,
     )
     # plt.tick_params(left=False, labelleft=False)
@@ -106,7 +106,7 @@ for i, time in enumerate(times):
     #     left=0.1,
     # )
     plt.title(f"\nt = {time}ms")
-    # plt.colorbar()
+    plt.colorbar()
     # Save under temp figs dir
     filename = filepath_figs + f"fig_{time:03}.png"
     plt.savefig(filename)
