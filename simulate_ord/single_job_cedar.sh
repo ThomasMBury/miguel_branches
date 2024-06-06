@@ -1,10 +1,9 @@
 #!/bin/bash -l
-#SBATCH --job-name=fhn_branch
+#SBATCH --job-name=ord_branch
 #SBATCH --account=def-gilbub # adjust this to match the accounting group you are using to submit jobs
 #SBATCH --time=0-0:20:00      # adjust this to match the walltime of your job
 #SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1      # adjust this if you are using parallel commands
+#SBATCH --cpus-per-task=4      # adjust this if you are using parallel commands
 #SBATCH --mem=4000             # adjust this according to the memory requirement per node you need
 #SBATCH --mail-user=thomas.bury@mcgill.ca # adjust this to match your email address
 #SBATCH --mail-type=END
@@ -28,11 +27,11 @@ source $SLURM_TMPDIR/venv/bin/activate
 echo Install python packages
 pip install --no-index --upgrade pip
 #pip install --no-index -r /home/tbury/projects/def-glass/tbury/torord-sims/requirements.txt
-pip install pandas numpy
+pip install --no-index pandas numpy
 # pip install git+https://github.com/MichaelClerx/myokit.git
 #pip install myokit==1.33.0
-pip install myokit
-pip install tyro
+pip install --no-index myokit==1.36
+pip install --no-index tyro
 
 # # Print opencl info found by myokit
 # python -m myokit opencl
