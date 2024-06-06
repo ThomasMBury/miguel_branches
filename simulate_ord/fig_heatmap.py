@@ -31,7 +31,7 @@ from funs import (
 import json
 
 names = sorted([n for n in os.listdir("output") if n[:4] == "2024"])[::-1]
-name = names[1]
+name = names[0]
 
 
 # Import config

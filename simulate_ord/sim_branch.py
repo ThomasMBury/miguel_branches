@@ -54,17 +54,21 @@ class Args:
     """time to run simulation up to"""
     double_precision: bool = False
     """whether to run OpenCL with 64-bit precision (doulbe) or 32-bit (single)"""
+    dt: float = 2e-5
+    """integration time step. 2e-3 or 5e-3 - smaller dt more stable"""
 
-    l1: int = 120
+    l1: int = 60
     """length of horizontal channel before and after junction """
-    w1: int = 10
+    w1: int = 5
     """width of horizontal channel"""
-    h: int = 40
+    h: int = 20
     """height of the diagonal channel"""
-    w2: int = 30
+    w2: int = 5
     """width of diagonal channel"""
     theta: int = 150
     """angle of diagonal channel"""
+    scale_up: int = 1
+    """parameter to scale up all length parameters of geometry"""
 
     # Ord parametes
     conductance: float = 1
@@ -102,10 +106,10 @@ json.dump(vars(args), open(dir_name + "config.json", "w"))
 
 # Create cell mesh that defines geometry
 cell_mesh = mesh_single_branch_2(
-    l1=args.l1,
-    w1=args.w1,
-    h=args.h,
-    w2=args.w2,
+    l1=args.l1 * args.scale_up,
+    w1=args.w1 * args.scale_up,
+    h=args.h * args.scale_up,
+    w2=args.w2 * args.scale_up,
     theta=args.theta,
 )
 
@@ -199,7 +203,7 @@ p.schedule(level, offset, duration)
 
 
 # Simulation time step (sometimes need 2e-3 as opposed to default 5-e3 to get convergence)
-dt = 2e-3  # 2e-3 or 5e-3 - smaller dt more stable
+dt = args.dt
 
 # Set parameters of model
 for key in params.keys():
