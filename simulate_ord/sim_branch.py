@@ -11,6 +11,7 @@ Use cell mesh 2
 """
 
 import numpy as np
+
 import pandas as pd
 import os
 
@@ -35,6 +36,7 @@ import pytz
 
 import json
 
+np.random.seed(0)
 
 # Get date and time in zone ET
 newYorkTz = pytz.timezone("America/New_York")
@@ -48,13 +50,13 @@ class Args:
     """name of the run"""
     save_voltage_data: bool = True
     """whether to save the voltage data at each log interval"""
-    log_interval: float = 5
+    log_interval: float = 2
     """how often to log system (number of time units)"""
-    tmax: int = 1000
+    tmax: int = 160
     """time to run simulation up to"""
     double_precision: bool = False
     """whether to run OpenCL with 64-bit precision (doulbe) or 32-bit (single)"""
-    dt: float = 2e-3
+    dt: float = 5e-3
     """integration time step. 2e-3 or 5e-3 - smaller dt more stable"""
 
     l1: int = 60
@@ -63,21 +65,19 @@ class Args:
     """width of horizontal channel"""
     h: int = 20
     """height of the diagonal channel"""
-    w2: int = 5
+    w2: int = 10
     """width of diagonal channel"""
-    theta: int = 150
+    theta: int = 60
     """angle of diagonal channel"""
     scale_up: int = 1
     """parameter to scale up all length parameters of geometry"""
 
     # Ord parametes
-    conductance: float = 1 / 4
+    conductance: float = 2
     """Cell-to-cell conductance g, resulting in a current sum(g*(v_k-v)))"""
 
     # pacing params
-    # stim_right: bool = False
-    # """stimulate from the rhs or lhs"""
-    stim_width: int = 4
+    stim_width: int = 5
     """width of area in which to stimulate"""
 
     # conduction time parameters
@@ -194,7 +194,7 @@ params[dict_par_labels["tjca"]] = params_default["tjca"] * tjca_mult
 bcl = 1000  # Pacing cycle length for cell
 duration = 1  # Duration of impulse (ms)
 level = 1  # Level of stimulus (1=full)
-offset = 0
+offset = 15
 
 # Pre-pacing protocol for each cell
 p_pre = myokit.pacing.blocktrain(bcl, duration, offset=offset, level=level)
@@ -216,7 +216,7 @@ for key in params.keys():
 
 # Prepacing of single cell to set initial condition
 s_cell = myokit.Simulation(m, p_pre)
-num_beats_pre = 100
+num_beats_pre = 1000
 print("Run pre-pacing of {} beats for single cell".format(num_beats_pre))
 s_cell.pre(num_beats_pre * bcl)
 print("Pre-pacing of single cell finished")

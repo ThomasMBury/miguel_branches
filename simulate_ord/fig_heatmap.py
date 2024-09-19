@@ -33,7 +33,6 @@ import json
 names = sorted([n for n in os.listdir("output") if n[:4] == "2024"])[::-1]
 name = names[0]
 
-
 # Import config
 with open(f"output/{name}/config.json", "r") as fp:
     config = json.load(fp)
@@ -71,7 +70,7 @@ index_to_pos = {value: key for key, value in pos_to_index.items()}
 # --------
 
 title = "FHN model on grid"
-times = np.arange(0, config["tmax"], 5)
+times = np.arange(0, config["tmax"], 2)
 images = []
 for i, time in enumerate(times):
 
@@ -94,7 +93,7 @@ for i, time in enumerate(times):
     plt.imshow(
         ar_plot,
         vmin=-120,
-        vmax=20,
+        vmax=40,
         # aspect=1,
     )
     # plt.tick_params(left=False, labelleft=False)

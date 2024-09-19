@@ -1,0 +1,1 @@
+{"run_name": "mac", "save_voltage_data": true, "log_interval": 5, "tmax": 100, "double_precision": false, "dt": 0.005, "l1": 60, "w1": 5, "h": 20, "w2": 5, "theta": 150, "scale_up": 1, "conductance": 0.25, "stim_width": 4, "x1": 20, "x2": 120, "active_thresh": 0, "open_cl_precision": 32}
